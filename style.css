@@ -118,3 +118,44 @@ input[type="range"] {
     padding: 10px;
   }
 }
+
+.control-wide {
+  grid-column: span 2;
+}
+
+.stage-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: #7a828c;
+}
+
+input[type="range"] {
+  height: 5px;
+  accent-color: #1a73e8;
+  cursor: pointer;
+}
+
+.control:hover {
+  border-color: #cbd3dc;
+}
+
+.control,
+.stage {
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.stage:hover {
+  box-shadow: 0 14px 34px rgba(28, 35, 43, 0.1);
+}
+
+@media (max-width: 480px) {
+  .control-wide {
+    grid-column: auto;
+  }
+}
