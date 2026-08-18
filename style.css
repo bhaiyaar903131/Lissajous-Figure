@@ -55,3 +55,66 @@ canvas {
   border: 1px solid #e1e5ea;
   border-radius: 8px;
 }
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.control {
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #dfe4ea;
+  border-radius: 10px;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+output {
+  font-size: 13px;
+  color: #5e6670;
+}
+
+input[type="range"] {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .app {
+    width: min(94%, 620px);
+    padding: 28px 0;
+  }
+
+  .controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 30px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .stage {
+    padding: 10px;
+  }
+}
