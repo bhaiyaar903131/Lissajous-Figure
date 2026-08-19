@@ -8,8 +8,11 @@ Different controls can be used to change the shape and movement of the curve.
 ## theme
 Electro art 
 aqua regia 
+
 This project fits Electro Art because it uses code.... mathematical sine waves + animation to generate  visual patterns
+
  By changing the values... the code generates different shapes and designs... TURNING MATHS CODE INTO VISUAL ART 
+ 
 ## Features
 
 * Animated Lissajous curves
