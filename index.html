@@ -8,10 +8,16 @@
 </head>
 <body>
   <main class="app">
-    <header>
-      <p class="eyebrow">Canvas Experiment</p>
-      <h1>Lissajous Figure</h1>
-      <p class="subtitle">Change the frequencies and phase to reshape the curve.</p>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Canvas Experiment</p>
+        <h1>Lissajous Figure Animator</h1>
+        <p class="subtitle">Mix two sine waves and watch the curve move in real time.</p>
+      </div>
+      <div class="formula">
+        <span>x = A sin(at + δ)</span>
+        <span>y = B sin(bt)</span>
+      </div>
     </header>
 
     <section class="controls">
@@ -79,16 +85,25 @@
         <input id="lineColor" type="color" value="#1a73e8">
       </div>
 
-      <button id="resetButton" type="button">Reset values</button>
+      <div class="button-row">
+        <button id="resetButton" type="button">Reset values</button>
+        <button id="pauseButton" type="button">Pause</button>
+      </div>
     </section>
 
     <section class="stage">
       <div class="stage-head">
-        <span>Animated preview</span>
-        <span>520 × 520</span>
+        <span>Live preview</span>
+        <span id="ratioValue">3.0 : 2.0</span>
       </div>
       <canvas id="lissajousCanvas" width="520" height="520"></canvas>
+      <p class="hint">Move any slider to create a different pattern.</p>
     </section>
+
+    <footer>
+      <span>Lissajous curve playground</span>
+      <span>HTML Canvas + JavaScript</span>
+    </footer>
   </main>
 
   <script src="script.js"></script>

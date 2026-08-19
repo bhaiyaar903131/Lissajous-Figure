@@ -5,28 +5,27 @@ const height = canvas.height;
 const centerX = width / 2;
 const centerY = height / 2;
 const resetButton = document.getElementById('resetButton');
+const pauseButton = document.getElementById('pauseButton');
+const ratioValue = document.getElementById('ratioValue');
 
-const inputs = {
-  freqX: document.getElementById('freqX'),
-  freqY: document.getElementById('freqY'),
-  phase: document.getElementById('phase'),
-  amplitudeX: document.getElementById('amplitudeX'),
-  amplitudeY: document.getElementById('amplitudeY'),
-  speed: document.getElementById('speed'),
-  lineWidth: document.getElementById('lineWidth'),
-  lineColor: document.getElementById('lineColor')
-};
+const controlKeys = [
+  'freqX',
+  'freqY',
+  'phase',
+  'amplitudeX',
+  'amplitudeY',
+  'speed',
+  'lineWidth',
+  'lineColor'
+];
 
-const values = {
-  freqX: document.getElementById('freqXValue'),
-  freqY: document.getElementById('freqYValue'),
-  phase: document.getElementById('phaseValue'),
-  amplitudeX: document.getElementById('amplitudeXValue'),
-  amplitudeY: document.getElementById('amplitudeYValue'),
-  speed: document.getElementById('speedValue'),
-  lineWidth: document.getElementById('lineWidthValue'),
-  lineColor: document.getElementById('lineColorValue')
-};
+const inputs = {};
+const values = {};
+
+controlKeys.forEach((key) => {
+  inputs[key] = document.getElementById(key);
+  values[key] = document.getElementById(`${key}Value`);
+});
 
 const defaults = {
   freqX: '3',
@@ -39,18 +38,22 @@ const defaults = {
   lineColor: '#1a73e8'
 };
 
-const points = 700;
+const points = 760;
 let time = 0;
+let paused = false;
 
 function readSettings() {
+  const frequencyX = Number(inputs.freqX.value);
+  const frequencyY = Number(inputs.freqY.value);
+
   return {
-    frequencyX: parseFloat(inputs.freqX.value),
-    frequencyY: parseFloat(inputs.freqY.value),
-    phase: parseFloat(inputs.phase.value) * Math.PI / 180,
-    amplitudeX: parseFloat(inputs.amplitudeX.value),
-    amplitudeY: parseFloat(inputs.amplitudeY.value),
-    speed: parseFloat(inputs.speed.value),
-    lineWidth: parseFloat(inputs.lineWidth.value),
+    frequencyX,
+    frequencyY,
+    phase: Number(inputs.phase.value) * Math.PI / 180,
+    amplitudeX: Number(inputs.amplitudeX.value),
+    amplitudeY: Number(inputs.amplitudeY.value),
+    speed: Number(inputs.speed.value),
+    lineWidth: Number(inputs.lineWidth.value),
     lineColor: inputs.lineColor.value
   };
 }
@@ -65,6 +68,16 @@ function updateLabels() {
   values.speed.textContent = settings.speed.toFixed(1);
   values.lineWidth.textContent = settings.lineWidth.toFixed(1);
   values.lineColor.textContent = settings.lineColor;
+  ratioValue.textContent = `${settings.frequencyX.toFixed(1)} : ${settings.frequencyY.toFixed(1)}`;
+}
+
+function pointOnCurve(settings, angle, motion) {
+  const xWave = settings.frequencyX * angle + settings.phase + motion;
+  const yWave = settings.frequencyY * angle + motion;
+  const x = centerX + settings.amplitudeX * Math.sin(xWave);
+  const y = centerY + settings.amplitudeY * Math.sin(yWave);
+
+  return { x, y };
 }
 
 function drawCurve(settings) {
@@ -73,17 +86,18 @@ function drawCurve(settings) {
   ctx.lineWidth = settings.lineWidth;
   ctx.strokeStyle = settings.lineColor;
   ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+
+  const motion = time * settings.speed;
 
   for (let i = 0; i <= points; i += 1) {
     const angle = Math.PI * 2 * i / points;
-    const motion = time * settings.speed;
-    const x = centerX + settings.amplitudeX * Math.sin(settings.frequencyX * angle + settings.phase + motion);
-    const y = centerY + settings.amplitudeY * Math.sin(settings.frequencyY * angle + motion);
+    const point = pointOnCurve(settings, angle, motion);
 
     if (i === 0) {
-      ctx.moveTo(x, y);
+      ctx.moveTo(point.x, point.y);
     } else {
-      ctx.lineTo(x, y);
+      ctx.lineTo(point.x, point.y);
     }
   }
 
@@ -91,8 +105,13 @@ function drawCurve(settings) {
 }
 
 function animate() {
-  drawCurve(readSettings());
-  time += 0.008;
+  const settings = readSettings();
+  drawCurve(settings);
+
+  if (!paused) {
+    time += 0.008;
+  }
+
   requestAnimationFrame(animate);
 }
 
@@ -102,16 +121,25 @@ function handleInput() {
 }
 
 function resetValues() {
-  Object.entries(defaults).forEach(([key, value]) => {
-    inputs[key].value = value;
+  controlKeys.forEach((key) => {
+    inputs[key].value = defaults[key];
   });
+
+  paused = false;
+  pauseButton.textContent = 'Pause';
   handleInput();
 }
 
-Object.values(inputs).forEach((input) => {
-  input.addEventListener('input', handleInput);
+function togglePause() {
+  paused = !paused;
+  pauseButton.textContent = paused ? 'Resume' : 'Pause';
+}
+
+controlKeys.forEach((key) => {
+  inputs[key].addEventListener('input', handleInput);
 });
 
 resetButton.addEventListener('click', resetValues);
+pauseButton.addEventListener('click', togglePause);
 updateLabels();
 animate();
